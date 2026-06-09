@@ -15,8 +15,9 @@ class Analyzer:
         print(self.df.info())
 
     def drop_columns(self,columns):
-        for col in columns:
-            self.df = self.df.drop(col, axis=1)
+        for df in [self.df, self.test]:
+            for col in columns:
+                df.drop(col, axis=1, inplace=True)
 
     def remove_duplicates(self):
         before = self.df.shape[0]
@@ -139,10 +140,13 @@ class Analyzer:
         self.test['Age'] = self.test['Age'].fillna(global_median)
 
     def sex_encoding(self):
-        self.df['Sex'] = self.df['Sex'].map({'male': 0, 'female': 1})
+        mapping = {'male': 0, 'female': 1}
+        for df in [self.df, self.test]:
+            df['Sex'] = df['Sex'].map(mapping)
 
     def family_size(self):
-        self.df['FamilySize'] = self.df['SibSp'] + self.df['Parch'] + 1
+        for df in [self.df, self.test]:
+            df['FamilySize'] = df['SibSp'] + df['Parch'] + 1
 
 
 

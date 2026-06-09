@@ -1,3 +1,4 @@
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -49,11 +50,10 @@ class Graphs:
         axes[1, 1].set_title('Fare Distribution')
         axes[1, 1].legend()
 
-        self.df['FamilySize'] = self.df['SibSp'] + self.df['Parch'] + 1
-        family_survival = self.df.groupby('FamilySize')['Survived'].mean()
-        axes[1, 2].bar(family_survival.index, family_survival.values, color='#9b59b6')
-        axes[1, 2].set_title('Survival by Family Size')
-        axes[1, 2].set_ylim(0, 1)
+        sns.countplot(data=self.df, x='Sex', hue='Survived', palette=['#e74c3c', '#2ecc71'], ax=axes[1, 2])
+        axes[1, 2].set_title('Survival Count by Gender')
+        axes[1, 2].legend(title='Survived', labels=['No', 'Yes'])
+
 
         plt.tight_layout()
         plt.show()
@@ -65,3 +65,35 @@ class Graphs:
     def plot_outliers(self, column):
         sns.boxplot(self.df[column])
         plt.show()
+
+
+    def correlation_matrix(self):
+        # selezione colonne numeriche
+        num_df = self.df.select_dtypes(include=['number'])
+        # matrice di correlazione
+        corr = num_df.corr()
+        # maschera triangolo superiore
+        mask = np.triu(np.ones_like(corr, dtype=bool))
+
+        # plot
+        plt.figure(figsize=(12, 10))
+        sns.heatmap(
+            corr,
+            mask=mask,
+            annot=True,
+            cmap="coolwarm",
+            fmt=".2f",
+            linewidths=0.5
+        )
+
+        plt.title("Correlation Heatmap (Lower Triangle)")
+        plt.show()
+        #buf = io.BytesIO()
+        #plt.savefig(buf, format="png", bbox_inches="tight")
+        #buf.seek(0)
+
+        #img_base64 = base64.b64encode(buf.read()).decode("utf-8")
+
+        #plt.close()
+
+        #return img_base64
