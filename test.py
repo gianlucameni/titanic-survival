@@ -24,7 +24,7 @@ grf = Graphs(tit.df)
 # salvo id del test per poter poi fare submission risultati
 passenger_ids = tit.test['PassengerId']
 # rimozione features non significative: id, ticket number, cabin (troppi null), embarked
-# La variabile Embarked è stata esclusa poiché considerata ridondante rispetto 
+# La variabile Embarked è stata esclusa poiché considerata ridondante rispetto
 # a variabili socio-economiche già presenti nel dataset, in particolare Pclass e Fare.
 # Inoltre, non fornisce informazione diretta sulla sopravvivenza,
 # ma solo una possibile proxy geografica delle condizioni socio-economiche dei passeggeri.
@@ -102,42 +102,46 @@ print(test_econded.columns)
 # Robust Scaler su AGE e FARE perchè contengono outliers (necessario per la regressione)
 preprocessor = Preprocessor()
 
-X_train = preprocessor.fit_transform(X_train)
-X_test = preprocessor.transform(X_test)
-test = preprocessor.transform(test_econded)
+X_train_processed = preprocessor.fit_transform(X_train_encoded)
+X_test_processed = preprocessor.transform(X_test_encoded)
+test_processed = preprocessor.transform(test_econded)
 
 # MODELLI
 #applichiamo la regressione logistica
 print("Regressione Logistica")
-log_reg_model = LogRegression()
+log_reg_model = LogRegression(max_iter=5000)
 
-log_reg_model.fit(X_train_encoded, y_train)
+# uso gridsearch
+best_params, best_score = log_reg_model.grid_search(X_train_processed, y_train)
 
-y_pred = log_reg_model.predict(X_test_encoded)
+print(best_params)
+print(best_score)
 
-metrics_lr = log_reg_model.metrics(X_test_encoded, y_test)
+y_pred = log_reg_model.predict(X_test_processed)
+
+metrics_lr = log_reg_model.metrics(X_test_processed, y_test)
 
 # calcolo predictions sul test originale per submission
-predictions = log_reg_model.predict(test_econded)
+predictions = log_reg_model.predict(test_processed)
 submission_lr = pd.DataFrame({
     'PassengerId': passenger_ids,
     'Survived': predictions
 })
 
-#submission.to_csv('logistic_regression.csv', index=False)
+submission_lr.to_csv('logistic_regression_grid.csv', index=False)
 
 #applichiamo XGBoost
 print("XGBoost")
 xgb_model = XGBoostModel()
 
-xgb_model.fit(X_train_encoded, y_train)
+xgb_model.fit(X_train_processed, y_train)
 
-y_pred_xgb = xgb_model.predict(X_test_encoded)
+y_pred_xgb = xgb_model.predict(X_test_processed)
 
-metrics_xgb = xgb_model.metrics(X_test_encoded, y_test)
+metrics_xgb = xgb_model.metrics(X_test_processed, y_test)
 
 # calcolo predictions sul test originale per submission
-predictions = xgb_model.predict(test_econded)
+predictions = xgb_model.predict(test_processed)
 submission_xgb = pd.DataFrame({
     'PassengerId': passenger_ids,
     'Survived': predictions
