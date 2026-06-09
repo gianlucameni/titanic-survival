@@ -56,7 +56,14 @@ class Graphs:
 
 
         plt.tight_layout()
-        plt.show()
+        #plt.show()
+        img = io.BytesIO()
+        plt.savefig(img, format='png')
+        img.seek(0)
+        plt.close(fig)
+
+        return img
+
 
     def plot_distribution(self, column):
         sns.histplot(self.df[column], kde=True)

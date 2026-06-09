@@ -27,14 +27,9 @@ class Analyzer:
         print(f"Duplicati trovati e rimossi: {before - after}")
 
     # Missing values
+    # metodo per il test
+    '''
     def missing_values(self):
-        #missing = self.df.isnull().sum()
-        #total = len(self.df)
-        #return {
-        #    "missing_values": missing.to_dict(),
-        #    "missing_percentage": (missing / total * 100).to_dict()
-        #}
-        #print(self.df.isnull().sum())
         for df in [self.df, self.test]:
             missing = df.isnull().sum()
             missing = missing[missing > 0]
@@ -44,6 +39,21 @@ class Analyzer:
                 print("Nessun valore mancante.")
             else:
                 print(missing)
+    '''
+
+    def missing_values(self):
+        result = {}
+
+        for name, df in [("train", self.df), ("test", self.test)]:
+            missing = df.isnull().sum()
+            missing = missing[missing > 0]
+
+            result[name] = {
+                "missing_values": missing.to_dict(),
+                "missing_percentage": (missing / len(df) * 100).to_dict()
+            }
+
+        return result
 
 
     # test normalita
