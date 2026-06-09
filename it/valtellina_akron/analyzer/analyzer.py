@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from scipy import stats
 
@@ -33,11 +34,20 @@ class Analyzer:
         #    "missing_values": missing.to_dict(),
         #    "missing_percentage": (missing / total * 100).to_dict()
         #}
-        print(self.df.isnull().sum())
+        #print(self.df.isnull().sum())
+        for df in [self.df, self.test]:
+            missing = df.isnull().sum()
+            missing = missing[missing > 0]
+
+            print(f"\n--- Analisi mancanti ---")
+            if missing.empty:
+                print("Nessun valore mancante.")
+            else:
+                print(missing)
 
 
     # test normalita
-    def dagostino_noramlity(self, col):
+    def dagostino_normality(self, col):
         # estraiamo solo i valori validi
         data = self.df[col].dropna()
 
@@ -138,6 +148,15 @@ class Analyzer:
         self.test['Age'] = self.test['Age'].fillna(pd.Series(imputed_values, index=self.test.index))
 
         self.test['Age'] = self.test['Age'].fillna(global_median)
+
+    def impute_fare(self):
+        self.test['Fare'] = self.df.groupby('Pclass')['Fare'].transform(lambda x: x.fillna(x.median()))
+
+
+    def normalization(self, col):
+        self.df[col] = np.log1p(self.df[col])
+        self.test[col] = np.log1p(self.test[col])
+
 
     def sex_encoding(self):
         mapping = {'male': 0, 'female': 1}
