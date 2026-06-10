@@ -147,6 +147,15 @@ def plot_outliers(feature):
 def correlation_matrix():
     tit = Analyzer("data/train.csv", "data/test.csv")
 
+    tit.title_extraction()
+    tit.rare_groups()
+    tit.impute_age_medians()
+
+    tit.drop_columns(["PassengerId", "Name", "Ticket", "Cabin", "Embarked"])
+    tit.sex_encoding()
+    tit.family_size()
+    tit.drop_columns(['SibSp', 'Parch'])
+
     grf = Graphs(tit.df)
     img = grf.correlation_matrix()
 
