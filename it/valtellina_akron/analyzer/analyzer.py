@@ -97,26 +97,32 @@ class Analyzer:
 
             return outlier_counts
 
-
-
     def detect_outliers(self, column):
-        Q1 = self.df[column].quantile(0.25)
-        Q3 = self.df[column].quantile(0.75)
-        IQR = Q3 - Q1
+        results = {}
 
-        lower = Q1 - 1.5 * IQR
-        upper = Q3 + 1.5 * IQR
+        for name, df in {
+            "train": self.df,
+            "test": self.test
+        }.items():
+            Q1 = df[column].quantile(0.25)
+            Q3 = df[column].quantile(0.75)
+            IQR = Q3 - Q1
 
-        outliers = self.df[
-            (self.df[column] < lower) |
-            (self.df[column] > upper)
-            ]
+            lower = Q1 - 1.5 * IQR
+            upper = Q3 + 1.5 * IQR
 
-        print(f"Outliers in {column}: {len(outliers)}")
-        count_outliers = len(outliers)
-        total = len(self.df)
-        perc_outliers = (count_outliers / total) * 100
-        print(f"Outliers percentage: {perc_outliers:.2f}%")
+            outliers = df[
+                (df[column] < lower) |
+                (df[column] > upper)
+                ]
+
+            results[name] = {
+                "count": len(outliers),
+                "percentage": round(len(outliers) / len(df) * 100, 2)
+            }
+
+        return results
+
 
 
     def title_extraction(self):

@@ -74,26 +74,32 @@ class LogRegression:
 
 
     def predict(self, X):
-        return self.best_model.predict(X)
+        if self.best_model is None:
+            return self.model.predict(X)
+        else:
+            return self.best_model.predict(X)
 
     def predict_probs(self, X):
-        return self.best_model.predict_proba(X) # restituisce il valore (es. 0.92)
+        if self.best_model is None:
+            return self.model.predict(X)
+        else:
+            return self.best_model.predict_proba(X) # restituisce il valore (es. 0.92)
 
     def metrics(self, X, y):
         # predizioni
         y_pred = self.predict(X) # restituisce la classe, 0 o 1
 
-        #return {
-        #    "accuracy": accuracy_score(y, y_pred),
-        #    "precision": precision_score(y, y_pred),
-        #    "recall": recall_score(y, y_pred),
-        #    "f1_score": f1_score(y, y_pred)
-        #}
+        return {
+            "accuracy": accuracy_score(y, y_pred),
+            "precision": precision_score(y, y_pred),
+            "recall": recall_score(y, y_pred),
+            "f1_score": f1_score(y, y_pred)
+        }
 
-        print("--- Risultati del Modello ---")
-        print(f"Accuracy:  {accuracy_score(y, y_pred):.4f}")
-        print(f"Precision: {precision_score(y, y_pred):.4f}")
-        print(f"Recall:    {recall_score(y, y_pred):.4f}")
-        print(f"F1 Score:  {f1_score(y, y_pred):.4f}")
-        print("-----------------------------")
+        #print("--- Risultati del Modello ---")
+        #print(f"Accuracy:  {accuracy_score(y, y_pred):.4f}")
+        #print(f"Precision: {precision_score(y, y_pred):.4f}")
+        #print(f"Recall:    {recall_score(y, y_pred):.4f}")
+        #print(f"F1 Score:  {f1_score(y, y_pred):.4f}")
+        #print("-----------------------------")
 

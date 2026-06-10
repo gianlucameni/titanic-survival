@@ -39,16 +39,16 @@ class XGBoostModel:
 
         y_pred = self.predict(X)
 
-        #return {
-        #    "accuracy": accuracy_score(y, y_pred),
-        #    "precision": precision_score(y, y_pred),
-        #    "recall": recall_score(y, y_pred),
-        #    "f1_score": f1_score(y, y_pred)
-        #}
+        return {
+            "accuracy": accuracy_score(y, y_pred),
+            "precision": precision_score(y, y_pred),
+            "recall": recall_score(y, y_pred),
+            "f1_score": f1_score(y, y_pred)
+        }
 
-        print("--- Risultati del Modello ---")
-        print(f"Accuracy:  {accuracy_score(y, y_pred):.4f}")
-        print(f"Precision: {precision_score(y, y_pred):.4f}")
-        print(f"Recall:    {recall_score(y, y_pred):.4f}")
-        print(f"F1 Score:  {f1_score(y, y_pred):.4f}")
-        print("-----------------------------")
+        #print("--- Risultati del Modello ---")
+        #print(f"Accuracy:  {accuracy_score(y, y_pred):.4f}")
+        #print(f"Precision: {precision_score(y, y_pred):.4f}")
+        #print(f"Recall:    {recall_score(y, y_pred):.4f}")
+        #print(f"F1 Score:  {f1_score(y, y_pred):.4f}")
+        #print("-----------------------------")

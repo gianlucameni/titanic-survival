@@ -64,25 +64,34 @@ class Graphs:
 
         return img
 
-
     def plot_distribution(self, column):
+        plt.figure(figsize=(8, 5))
         sns.histplot(self.df[column], kde=True)
-        plt.show()
+
+        buf = io.BytesIO()
+        plt.savefig(buf, format="png", bbox_inches="tight")
+        plt.close()
+        buf.seek(0)
+
+        return buf
 
     def plot_outliers(self, column):
-        sns.boxplot(self.df[column])
-        plt.show()
+        plt.figure(figsize=(8, 5))
+        sns.boxplot(x=self.df[column])
 
+        buf = io.BytesIO()
+        plt.savefig(buf, format="png", bbox_inches="tight")
+        plt.close()
+        buf.seek(0)
+
+        return buf
 
     def correlation_matrix(self):
-        # selezione colonne numeriche
         num_df = self.df.select_dtypes(include=['number'])
-        # matrice di correlazione
         corr = num_df.corr()
-        # maschera triangolo superiore
+
         mask = np.triu(np.ones_like(corr, dtype=bool))
 
-        # plot
         plt.figure(figsize=(12, 10))
         sns.heatmap(
             corr,
@@ -94,13 +103,10 @@ class Graphs:
         )
 
         plt.title("Correlation Heatmap (Lower Triangle)")
-        plt.show()
-        #buf = io.BytesIO()
-        #plt.savefig(buf, format="png", bbox_inches="tight")
-        #buf.seek(0)
 
-        #img_base64 = base64.b64encode(buf.read()).decode("utf-8")
+        buf = io.BytesIO()
+        plt.savefig(buf, format="png", bbox_inches="tight")
+        plt.close()
+        buf.seek(0)
 
-        #plt.close()
-
-        #return img_base64
+        return buf
